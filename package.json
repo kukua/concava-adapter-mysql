@@ -1,0 +1,40 @@
+{
+  "name": "concava-adapter-mysql",
+  "version": "0.1.0",
+  "description": "ConCaVa adapter for authorization, metadata and storage through MySQL.",
+  "main": "lib/adapter.js",
+  "scripts": {
+    "compile": "babel -d lib/ src/",
+    "prepublish": "npm run compile",
+    "lint": "eslint src/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "pre-commit": "lint",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kukua/node-concava-adapter-mysql.git"
+  },
+  "keywords": [
+    "concava",
+    "adapter",
+    "mysql"
+  ],
+  "author": "Maurits van Mastrigt <maurits@kukua.cc>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kukua/node-concava-adapter-mysql/issues"
+  },
+  "homepage": "https://github.com/kukua/node-concava-adapter-mysql#readme",
+  "dependencies": {
+    "async-waterfall": "~0.1.5",
+    "map-async": "~0.1.1",
+    "mysql": "~2.10.0",
+    "utils-merge": "~1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "~6.3.17",
+    "babel-preset-es2015": "~6.3.13",
+    "eslint": "~1.9.0",
+    "pre-commit": "~1.1.2"
+  }
+}
