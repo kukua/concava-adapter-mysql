@@ -45,7 +45,7 @@ var authQuery = `
 `
 
 export let auth = (req, { config }, data, cb) => {
-	getQueryMethod(req, config.config)(
+	getQueryMethod(req, config)(
 		(config.authQuery || authQuery),
 		req.auth.token,
 		(err, rows) => {
