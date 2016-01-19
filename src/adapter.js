@@ -19,8 +19,8 @@ var getClient = (config) => {
 			waitForConnections: true,
 			connectionLimit: 100,
 			queueLimit: 0, // Disable
-			queryFormat,
 		}, config))
+		config._client.config.queryFormat = queryFormat
 	}
 
 	return config._client
