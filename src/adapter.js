@@ -4,15 +4,6 @@ import map from 'map-async'
 import waterfall from 'async-waterfall'
 
 // MySQL client
-function queryFormat (query, values) {
-	if ( ! values) return query
-	return query.replace(/\:(\w+)/g, function (val, key) {
-		if (values.hasOwnProperty(key)) {
-			return this.escape(values[key])
-		}
-		return val
-	}.bind(this))
-}
 var getClient = (config) => {
 	if ( ! config._client) {
 		config._client = mysql.createPool(merge({
@@ -20,7 +11,6 @@ var getClient = (config) => {
 			connectionLimit: 100,
 			queueLimit: 0, // Disable
 		}, config))
-		config._client.config.queryFormat = queryFormat
 	}
 
 	return config._client
@@ -29,9 +19,11 @@ var getQueryMethod = (req, config) => {
 	var client = getClient(config)
 	return (sql, values, cb) => {
 		client.query({
-			sql: (config.authQuery || authQuery),
+			sql: sql.replace(/\:(\w+)/g, function (val, key) {
+				if ( ! values.hasOwnProperty(key)) return val
+				return client.escape(values[key])
+			}),
 			timeout: config.timeout,
-			values: [req.auth.token],
 		}, cb)
 	}
 }
@@ -47,7 +39,7 @@ var authQuery = `
 export let auth = (req, { config }, data, cb) => {
 	getQueryMethod(req, config)(
 		(config.authQuery || authQuery),
-		req.auth.token,
+		req.auth,
 		(err, rows) => {
 			if (err) return cb(err)
 			if ( ! rows[0]) return cb('No user for token.')
