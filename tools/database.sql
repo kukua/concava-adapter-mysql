@@ -22,10 +22,23 @@ INSERT INTO `user_tokens` (`user_id`, `token`) VALUES
 	;
 
 
+DROP TABLE IF EXISTS `devices`;
+CREATE TABLE `devices` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `udid` varchar(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `udid` (`udid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `devices` (`id`, `udid`) VALUES
+	(1, '0000000000000001')
+	;
+
+
 DROP TABLE IF EXISTS `attributes`;
 CREATE TABLE `attributes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `device_id` varchar(32) NOT NULL DEFAULT '',
+  `device_id` int(11) unsigned NOT NULL,
   `name` varchar(64) NOT NULL DEFAULT '',
   `order` int(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -33,7 +46,7 @@ CREATE TABLE `attributes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `attributes` (`id`, `device_id`, `name`, `order`) VALUES
-	(1, '0000000000000001', 'attr1', 0)
+	(1, 1, 'attr1', 0)
 	;
 
 

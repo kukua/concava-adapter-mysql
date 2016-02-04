@@ -33,8 +33,7 @@ var authQuery = `
 	SELECT users.* FROM users
 	INNER JOIN user_tokens ON user_tokens.user_id = users.id
 	WHERE user_tokens.token = :token
-	LIMIT 1
-`
+	LIMIT 1`
 
 export let auth = (req, { config }, data, cb) => {
 	getQueryMethod(req, config)(
@@ -91,7 +90,10 @@ export let metadata = (req, config, data, { SensorAttribute }, cb) => {
 
 function getAttributes (deviceId, cb) {
 	this.query(
-		'SELECT * FROM attributes WHERE device_id = :id ORDER BY `order`',
+		`SELECT * FROM attributes
+			INNER JOIN devices ON devices.id = attributes.device_id
+			WHERE devices.udid = :id
+			ORDER BY attributes.\`order\``,
 		{ id: deviceId },
 		(err, rows) => {
 			if (err) return cb(err)
