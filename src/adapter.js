@@ -90,7 +90,7 @@ export let metadata = (req, config, data, { SensorAttribute }, cb) => {
 
 function getAttributes (deviceId, cb) {
 	this.query(
-		`SELECT * FROM attributes
+		`SELECT attributes.* FROM attributes
 			INNER JOIN devices ON devices.id = attributes.device_id
 			WHERE devices.udid = :id
 			ORDER BY attributes.\`order\``,
