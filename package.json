@@ -1,6 +1,6 @@
 {
   "name": "concava-adapter-mysql",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "ConCaVa adapter for authorization, metadata and storage through MySQL.",
   "main": "lib/adapter.js",
   "scripts": {
