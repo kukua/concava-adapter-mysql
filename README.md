@@ -19,6 +19,7 @@ A ConCaVa configuration example:
 ```js
 import { auth, metadata, storage } from 'concava-adapter-mysql'
 
+// Connection configuration
 var config = {
 	host: 'mysql',
 	user: process.env.MYSQL_USER,
@@ -38,10 +39,14 @@ export default {
 	metadata: {
 		method: metadata,
 		config,
+		converterSql: '', // Custom query
+		calibratorSql: '', // Custom query
+		validatorSql: '', // Custom query
 	},
 	storage: {
 		method: storage,
 		config,
+		sql: '', // Custom query
 	},
 }
 ```

@@ -2,6 +2,31 @@ import mysql from 'mysql'
 import map from 'map-async'
 import waterfall from 'async-waterfall'
 
+const authQuery = `
+	SELECT users.* FROM users
+	INNER JOIN user_tokens ON user_tokens.user_id = users.id
+	WHERE user_tokens.token = :token
+	LIMIT 1`
+const attributeQuery = `
+	SELECT attributes.* FROM attributes
+	INNER JOIN devices ON devices.id = attributes.device_id
+	WHERE devices.udid = :id
+	ORDER BY attributes.\`order\``
+const converterQuery = `
+	SELECT type, value FROM converters
+	WHERE attribute_id = :id
+	ORDER BY \`order\``
+const calibratorQuery = `
+	SELECT fn FROM calibrators
+	WHERE attribute_id = :id
+	ORDER BY \`order\``
+const validatorQuery = `
+	SELECT type, value FROM validators
+	WHERE attribute_id = :id
+	ORDER BY \`order\``
+const storageQuery = `
+	REPLACE INTO ?? SET ?, \`timestamp\` = FROM_UNIXTIME(?)`
+
 var getQueryMethod = (client, config) => {
 	return (sql, values, cb) => {
 		client.query({
@@ -15,12 +40,6 @@ var getQueryMethod = (client, config) => {
 }
 
 // Authorization adapter
-var authQuery = `
-	SELECT users.* FROM users
-	INNER JOIN user_tokens ON user_tokens.user_id = users.id
-	WHERE user_tokens.token = :token
-	LIMIT 1`
-
 export let auth = (req, options, data, cb) => {
 	var { config } = options
 	var client = mysql.createConnection(config)
@@ -57,6 +76,7 @@ export let metadata = (req, options, data, { SensorAttribute }, cb) => {
 	var client = mysql.createConnection(config)
 	var scope = {
 		query: getQueryMethod(client, config),
+		options,
 		SensorAttribute,
 	}
 
@@ -84,10 +104,7 @@ export let metadata = (req, options, data, { SensorAttribute }, cb) => {
 
 function getAttributes (deviceId, cb) {
 	this.query(
-		`SELECT attributes.* FROM attributes
-			INNER JOIN devices ON devices.id = attributes.device_id
-			WHERE devices.udid = :id
-			ORDER BY attributes.\`order\``,
+		(this.options.attributeSql || attributeQuery),
 		{ id: deviceId },
 		(err, rows) => {
 			if (err) return cb(err)
@@ -102,7 +119,7 @@ function getAttributes (deviceId, cb) {
 function setConverters (attributes, cb) {
 	map(attributes, (attr, cb) => {
 		this.query(
-			'SELECT type, value FROM converters WHERE attribute_id = :id ORDER BY `order`',
+			(this.options.converterSql || converterQuery),
 			{ id: attr.id },
 			(err, rows) => {
 				if (err) return cb(err)
@@ -118,7 +135,7 @@ function setConverters (attributes, cb) {
 function setCalibrators (attributes, cb) {
 	map(attributes, (attr, cb) => {
 		this.query(
-			'SELECT fn FROM calibrators WHERE attribute_id = :id ORDER BY `order`',
+			(this.options.calibratorSql || calibratorQuery),
 			{ id: attr.id },
 			(err, rows) => {
 				if (err) return cb(err)
@@ -134,7 +151,7 @@ function setCalibrators (attributes, cb) {
 function setValidators (attributes, cb) {
 	map(attributes, (attr, cb) => {
 		this.query(
-			'SELECT type, value FROM validators WHERE attribute_id = :id ORDER BY `order`',
+			(this.options.validatorSql || validatorQuery),
 			{ id: attr.id },
 			(err, rows) => {
 				if (err) return cb(err)
@@ -158,7 +175,7 @@ export let storage = (req, options, data, cb) => {
 	delete values.timestamp
 
 	getQueryMethod(client, config)(
-		'REPLACE INTO ?? SET ?, `timestamp` = FROM_UNIXTIME(?)',
+		(options.sql || storageQuery),
 		[id, values, timestamp],
 		cb
 	)
