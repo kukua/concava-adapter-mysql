@@ -21,11 +21,12 @@ var authQuery = `
 	WHERE user_tokens.token = :token
 	LIMIT 1`
 
-export let auth = (req, { config }, data, cb) => {
+export let auth = (req, options, data, cb) => {
+	var { config } = options
 	var client = mysql.createConnection(config)
 
 	getQueryMethod(client, config)(
-		(config.authQuery || authQuery),
+		(options.sql || authQuery),
 		req.auth,
 		(err, rows) => {
 			client.destroy()

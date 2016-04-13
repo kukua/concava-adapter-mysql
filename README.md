@@ -25,7 +25,6 @@ var config = {
 	password: process.env.MYSQL_PASS,
 	database: process.env.ON_CREATE_DB,
 	timeout: 3000, // ms
-	authQuery: '', // Custom query
 }
 
 export default {
@@ -34,6 +33,7 @@ export default {
 		enabled: true,
 		method: auth,
 		config,
+		sql: '', // Custom query
 	},
 	metadata: {
 		method: metadata,
@@ -48,7 +48,7 @@ export default {
 }
 ```
 
-Provide a custom SQL query with `authQuery`. In this query all values from `req.auth` will be replaced. Default replacements:
+Provide a custom SQL query with `auth.sql`. In this query all values from `req.auth` will be replaced. By default these are:
 
 - `:header`: full authorization header
 - `:token`: token from authorization header (requires `auth.byToken = true`)
