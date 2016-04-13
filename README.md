@@ -39,8 +39,6 @@ export default {
 		method: metadata,
 		config,
 	},
-
-	// NOTE: Not yet supported. Use other storage adapter instead.
 	storage: {
 		method: storage,
 		config,

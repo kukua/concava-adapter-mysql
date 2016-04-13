@@ -150,5 +150,16 @@ function setValidators (attributes, cb) {
 
 // Storage adapter
 export let storage = (req, options, data, cb) => {
-	cb('MySQL storage not yet supported.')
+	var id = data.getDeviceId()
+	var { config } = options
+	var client = mysql.createConnection(config)
+	var values = data.getData()
+	var timestamp = values.timestamp
+	delete values.timestamp
+
+	getQueryMethod(client, config)(
+		'REPLACE INTO ?? SET ?, `timestamp` = FROM_UNIXTIME(?)',
+		[id, values, timestamp],
+		cb
+	)
 }
