@@ -28,8 +28,7 @@
   "dependencies": {
     "async-waterfall": "~0.1.5",
     "map-async": "~0.1.1",
-    "mysql": "~2.10.0",
-    "utils-merge": "~1.0.0"
+    "mysql": "~2.10.0"
   },
   "devDependencies": {
     "babel-cli": "~6.3.17",

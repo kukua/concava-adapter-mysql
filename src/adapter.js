@@ -1,22 +1,8 @@
 import mysql from 'mysql'
-import merge from 'utils-merge'
 import map from 'map-async'
 import waterfall from 'async-waterfall'
 
-// MySQL client
-var getClient = (config) => {
-	if ( ! config._client) {
-		config._client = mysql.createPool(merge({
-			waitForConnections: true,
-			connectionLimit: 100,
-			queueLimit: 0, // Disable
-		}, config))
-	}
-
-	return config._client
-}
-var getQueryMethod = (req, config) => {
-	var client = getClient(config)
+var getQueryMethod = (client, config) => {
 	return (sql, values, cb) => {
 		client.query({
 			sql: sql.replace(/\:(\w+)/g, function (val, key) {
@@ -36,10 +22,14 @@ var authQuery = `
 	LIMIT 1`
 
 export let auth = (req, { config }, data, cb) => {
-	getQueryMethod(req, config)(
+	var client = mysql.createConnection(config)
+
+	getQueryMethod(client, config)(
 		(config.authQuery || authQuery),
 		req.auth,
 		(err, rows) => {
+			client.destroy()
+
 			if (err) return cb(err)
 			if ( ! rows[0]) return cb('No user for token.')
 
@@ -51,20 +41,21 @@ export let auth = (req, { config }, data, cb) => {
 // Metadata adapter
 var cache = {}
 
-export let metadata = (req, config, data, { SensorAttribute }, cb) => {
-	var id = data.getDeviceId()
-
+export let metadata = (req, options, data, { SensorAttribute }, cb) => {
 	// Check cache
+	var id = data.getDeviceId()
 	var cached = cache[id]
 
-	if (cached && cached.timestamp > Date.now() - config.cacheExpireTime) {
+	if (cached && cached.timestamp > Date.now() - options.cacheExpireTime) {
 		data.setAttributes(cached.attributes)
 		return cb()
 	}
 
 	// Query metadata
+	var { config } = options
+	var client = mysql.createConnection(config)
 	var scope = {
-		query: getQueryMethod(req, config.config),
+		query: getQueryMethod(client, config),
 		SensorAttribute,
 	}
 
@@ -76,6 +67,8 @@ export let metadata = (req, config, data, { SensorAttribute }, cb) => {
 		setValidators.bind(scope),
 		(attributes, cb) => { cb(null, attributes.map((attr) => attr.instance)) },
 	], (err, attributes) => {
+		client.destroy()
+
 		if (err) return cb(err)
 		if ( ! attributes.length) return cb('No metadata available for device ' + id)
 
@@ -155,6 +148,6 @@ function setValidators (attributes, cb) {
 }
 
 // Storage adapter
-export let storage = (req, config, data, cb) => {
+export let storage = (req, options, data, cb) => {
 	cb('MySQL storage not yet supported.')
 }
