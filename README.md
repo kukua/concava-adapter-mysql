@@ -39,6 +39,7 @@ export default {
 	metadata: {
 		method: metadata,
 		config,
+		attributeSql: '', // Custom query
 		converterSql: '', // Custom query
 		calibratorSql: '', // Custom query
 		validatorSql: '', // Custom query
