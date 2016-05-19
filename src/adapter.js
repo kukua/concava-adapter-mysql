@@ -10,19 +10,19 @@ const authQuery = `
 const attributeQuery = `
 	SELECT attributes.* FROM attributes
 	INNER JOIN devices ON devices.id = attributes.device_id
-	WHERE devices.udid = :id
+	WHERE devices.udid = :udid
 	ORDER BY attributes.\`order\``
 const converterQuery = `
 	SELECT type, value FROM converters
-	WHERE attribute_id = :id
+	WHERE attribute_id = :attribute_id
 	ORDER BY \`order\``
 const calibratorQuery = `
 	SELECT fn FROM calibrators
-	WHERE attribute_id = :id
+	WHERE attribute_id = :attribute_id
 	ORDER BY \`order\``
 const validatorQuery = `
 	SELECT type, value FROM validators
-	WHERE attribute_id = :id
+	WHERE attribute_id = :attribute_id
 	ORDER BY \`order\``
 const storageQuery = `
 	REPLACE INTO ?? SET ?, \`timestamp\` = FROM_UNIXTIME(?)`
@@ -105,7 +105,7 @@ export let metadata = (req, options, data, { SensorAttribute }, cb) => {
 function getAttributes (deviceId, cb) {
 	this.query(
 		(this.options.attributeSql || attributeQuery),
-		{ id: deviceId },
+		{ udid: deviceId },
 		(err, rows) => {
 			if (err) return cb(err)
 
@@ -120,7 +120,7 @@ function setConverters (attributes, cb) {
 	map(attributes, (attr, cb) => {
 		this.query(
 			(this.options.converterSql || converterQuery),
-			{ id: attr.id },
+			{ attribute_id: attr.id },
 			(err, rows) => {
 				if (err) return cb(err)
 
@@ -136,7 +136,7 @@ function setCalibrators (attributes, cb) {
 	map(attributes, (attr, cb) => {
 		this.query(
 			(this.options.calibratorSql || calibratorQuery),
-			{ id: attr.id },
+			{ attribute_id: attr.id },
 			(err, rows) => {
 				if (err) return cb(err)
 
@@ -152,7 +152,7 @@ function setValidators (attributes, cb) {
 	map(attributes, (attr, cb) => {
 		this.query(
 			(this.options.validatorSql || validatorQuery),
-			{ id: attr.id },
+			{ attribute_id: attr.id },
 			(err, rows) => {
 				if (err) return cb(err)
 

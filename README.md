@@ -56,3 +56,4 @@ Provide a custom SQL query with `auth.sql`. In this query all values from `req.a
 
 - `:header`: full authorization header
 - `:token`: token from authorization header (requires `auth.byToken = true`)
+- `:udid`: unique device ID (since ConCaVa v0.5)
