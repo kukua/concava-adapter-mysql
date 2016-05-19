@@ -28,6 +28,7 @@
   "dependencies": {
     "async-waterfall": "~0.1.5",
     "map-async": "~0.1.1",
+    "merge": "^1.2.0",
     "mysql": "~2.10.0"
   },
   "devDependencies": {

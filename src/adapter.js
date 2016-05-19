@@ -1,6 +1,7 @@
 import mysql from 'mysql'
 import map from 'map-async'
 import waterfall from 'async-waterfall'
+import merge from 'merge'
 
 const authQuery = `
 	SELECT users.* FROM users
@@ -170,7 +171,7 @@ export let storage = (req, options, data, cb) => {
 	var id = data.getDeviceId()
 	var { config } = options
 	var client = mysql.createConnection(config)
-	var values = data.getData()
+	var values = merge(true, data.getData())
 	var timestamp = values.timestamp
 	delete values.timestamp
 
