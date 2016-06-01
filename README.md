@@ -17,36 +17,36 @@ npm install concava-adapter-mysql
 A ConCaVa configuration example:
 
 ```js
-import { auth, metadata, storage } from 'concava-adapter-mysql'
+const adapter = require('concava-adapter-mysql')
 
 // Connection configuration
 var config = {
 	host: 'mysql',
-	user: process.env.MYSQL_USER,
-	password: process.env.MYSQL_PASS,
-	database: process.env.ON_CREATE_DB,
+	user: process.env['MYSQL_USER'],
+	password: process.env['MYSQL_PASS'],
+	database: process.env['ON_CREATE_DB'],
 	timeout: 3000, // ms
 }
 
-export default {
+module.exports = {
 	debug: true,
 	auth: {
 		enabled: true,
-		method: auth,
-		config,
+		method: adapter.auth,
+		config: config,
 		sql: '', // Custom query
 	},
 	metadata: {
-		method: metadata,
-		config,
+		method: adapter.metadata,
+		config: config,
 		attributeSql: '', // Custom query
 		converterSql: '', // Custom query
 		calibratorSql: '', // Custom query
 		validatorSql: '', // Custom query
 	},
 	storage: {
-		method: storage,
-		config,
+		method: adapter.storage,
+		config: config,
 		sql: '', // Custom query
 	},
 }
@@ -57,3 +57,9 @@ Provide a custom SQL query with `auth.sql`. In this query all values from `req.a
 - `:header`: full authorization header
 - `:token`: token from authorization header (requires `auth.byToken = true`)
 - `:udid`: unique device ID (since ConCaVa v0.5)
+
+## License
+
+This software is licensed under the [MIT license](https://github.com/kukua/node-concava-adapter-mqtt/blob/master/LICENSE).
+
+© 2016 Kukua BV
