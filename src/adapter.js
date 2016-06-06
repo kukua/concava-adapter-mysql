@@ -6,11 +6,15 @@ import merge from 'merge'
 const authQuery = `
 	SELECT users.* FROM users
 	INNER JOIN user_tokens ON user_tokens.user_id = users.id
+	INNER JOIN user_devices ON user_devices.user_id = users.id
+	INNER JOIN devices ON devices.id = user_devices.device_id
 	WHERE user_tokens.token = :token
+	AND devices.udid = :udid
 	LIMIT 1`
 const attributeQuery = `
 	SELECT attributes.* FROM attributes
-	INNER JOIN devices ON devices.id = attributes.device_id
+	INNER JOIN templates ON templates.id = attributes.template_id
+	INNER JOIN devices ON devices.template_id = templates.id
 	WHERE devices.udid = :udid
 	ORDER BY attributes.\`order\``
 const converterQuery = `
