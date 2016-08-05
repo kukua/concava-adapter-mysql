@@ -146,7 +146,7 @@ function setCalibrators (attributes, cb) {
 				if (err) return cb(err)
 
 				rows.forEach((row) => {
-					attr.instance.addCalibrator(new Function('value', row.fn))
+					attr.instance.addCalibrator(new Function(row.fn))
 				})
 				cb(null, attr)
 			}
