@@ -53,7 +53,7 @@ export let auth = (req, options, data, cb) => {
 		(options.sql || authQuery),
 		req.auth,
 		(err, rows) => {
-			client.destroy()
+			client.end()
 
 			if (err) return cb(err)
 			if ( ! rows[0]) return cb('No user for token.')
@@ -93,7 +93,7 @@ export let metadata = (req, options, data, { SensorAttribute }, cb) => {
 		setValidators.bind(scope),
 		(attributes, cb) => { cb(null, attributes.map((attr) => attr.instance)) },
 	], (err, attributes) => {
-		client.destroy()
+		client.end()
 
 		if (err) return cb(err)
 		if ( ! attributes.length) return cb('No metadata available for device ' + id)
@@ -186,5 +186,11 @@ export let storage = (req, options, data, cb) => {
 		delete values[key]
 	})
 
-	getQueryMethod(client, config)(query, params, cb)
+	getQueryMethod(client, config)(query, params, (err) => {
+		client.end()
+
+		if (err) return cb(err)
+
+		cb()
+	})
 }
