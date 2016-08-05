@@ -30,7 +30,7 @@ const validatorQuery = `
 	WHERE attribute_id = :attribute_id
 	ORDER BY \`order\``
 const storageQuery = `
-	REPLACE INTO ?? SET ?, \`timestamp\` = FROM_UNIXTIME(?)`
+	REPLACE INTO ?? SET ?`
 
 var getQueryMethod = (client, config) => {
 	return (sql, values, cb) => {
@@ -176,12 +176,15 @@ export let storage = (req, options, data, cb) => {
 	var { config } = options
 	var client = mysql.createConnection(config)
 	var values = merge(true, data.getData())
-	var timestamp = values.timestamp
-	delete values.timestamp
+	var query  = (options.sql || storageQuery)
+	var params = [id, values]
 
-	getQueryMethod(client, config)(
-		(options.sql || storageQuery),
-		[id, values, timestamp],
-		cb
-	)
+	Object.keys(values).forEach((key) => {
+		if (key.toLowerCase().indexOf('timestamp') === -1) return
+		query += ', `' + key + '` = FROM_UNIXTIME(?)'
+		params.push(values[key])
+		delete values[key]
+	})
+
+	getQueryMethod(client, config)(query, params, cb)
 }
