@@ -2,11 +2,9 @@
 
 > ConCaVa adapter for authorization, metadata and storage through MySQL.
 
-Requires ConCaVa v0.6+.
-
-**Note:** The MQTT server is lazy loaded, so it becomes available after processing the first sensor data.
-
 See [ConCaVa with MySQL and InfluxDB](https://github.com/kukua/concava-setup-mysql-influxdb) for a working setup.
+
+Requires ConCaVa v0.6+.
 
 ## Install
 
@@ -62,6 +60,6 @@ Provide a custom SQL query with `auth.sql`. In this query all values from `req.a
 
 ## License
 
-This software is licensed under the [MIT license](https://github.com/kukua/node-concava-adapter-mqtt/blob/master/LICENSE).
+This software is licensed under the [MIT license](https://github.com/kukua/node-concava-adapter-mysql/blob/master/LICENSE).
 
 © 2016 Kukua BV
