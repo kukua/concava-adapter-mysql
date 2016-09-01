@@ -39,6 +39,7 @@ module.exports = {
 	metadata: {
 		method: adapter.metadata,
 		config: config,
+		cacheExpireTime: 15 * 60 * 1000, // ms
 		attributeSql: '', // Custom query
 		converterSql: '', // Custom query
 		calibratorSql: '', // Custom query
