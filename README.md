@@ -60,6 +60,6 @@ Provide a custom SQL query with `auth.sql`. In this query all values from `req.a
 
 ## License
 
-This software is licensed under the [MIT license](https://github.com/kukua/node-concava-adapter-mysql/blob/master/LICENSE).
+This software is licensed under the [MIT license](https://github.com/kukua/concava-adapter-mysql/blob/master/LICENSE).
 
 © 2016 Kukua BV

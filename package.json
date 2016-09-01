@@ -12,7 +12,7 @@
   "pre-commit": "lint",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kukua/node-concava-adapter-mysql.git"
+    "url": "git+https://github.com/kukua/concava-adapter-mysql.git"
   },
   "keywords": [
     "concava",
@@ -22,9 +22,9 @@
   "author": "Kukua Team <dev@kukua.cc>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kukua/node-concava-adapter-mysql/issues"
+    "url": "https://github.com/kukua/concava-adapter-mysql/issues"
   },
-  "homepage": "https://github.com/kukua/node-concava-adapter-mysql#readme",
+  "homepage": "https://github.com/kukua/concava-adapter-mysql#readme",
   "dependencies": {
     "async-waterfall": "~0.1.5",
     "map-async": "~0.1.1",
